@@ -7,6 +7,10 @@ jobs:
   ssh-test:
     runs-on: ubuntu-latest
     steps:
+          - name: Testing Variables
+            run: |
+                 echo "${{ secrets.SERVER_SSH_KEY }}"
+                 
           - name: Install cloudflared
             run: |
               curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 \
@@ -30,4 +34,4 @@ jobs:
     
           - name: Handshake test
             run: |
-              ssh -vvv ssh.tushar.sbs "echo CONNECTED && whoami && hostname"
+              ssh  deploy@ssh.tushar.sbs

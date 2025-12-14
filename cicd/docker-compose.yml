@@ -1,0 +1,58 @@
+
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      args:
+        - VITE_AZURE_CLIENT_ID=dd928a2c-94fa-4a81-bdd6-35875155e1b5
+        - VITE_AZURE_TENANT_ID=23b43f95-ee24-4948-88ac-6ebef2476960
+        - VITE_BACKEND_URL=/api
+        - VITE_REDIRECT_URI=http://localhost   
+                  
+    container_name: expense-client
+    ports:
+      - "80:80"
+    restart: always
+    networks: [appnet]
+
+  server:
+    build:
+      context: ./server
+    container_name: expense-server
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=expense_tracker;Username=postgres;Password=postgres
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks: [appnet]
+
+
+  db:
+    image: postgres:16-alpine
+    container_name: expense-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: expense_tracker
+    ports:
+      - "5433:5432"
+    expose:
+      - "5"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: [appnet]
+
+
+volumes:
+  postgres_data:     
+networks:
+  appnet:
+    driver: bridge

@@ -1,39 +1,19 @@
-name: Docker Image CI
+name: SSH Handshake Test
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   ssh-test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Install cloudflared
-        run: |
-          curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 \
-            -o cloudflared
-          chmod +x cloudflared
-          sudo mv cloudflared /usr/local/bin/cloudflared
-
-      - name: SSH via Cloudflare Tunnel
+      - name: Prepare SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
+          echo -e "Host ssh.tushar.sbs\n  User deploy\n  StrictHostKeyChecking no" > ~/.ssh/config
 
-          cat <<EOF > ~/.ssh/config
-          Host ssh.tushar.sbs
-            User deploy
-            IdentityFile ~/.ssh/id_ed25519
-            ProxyCommand cloudflared access ssh --hostname %h
-          EOF
-
-          ssh ssh.tushar.sbs << 'EOF'
-            echo "Hello from GitHub Actions"
-            whoami
-            hostname
-            uptime
-          EOF
+      - name: Handshake
+        run: |
+          ssh -vvv ssh.tushar.sbs "echo CONNECTED && whoami && hostname"

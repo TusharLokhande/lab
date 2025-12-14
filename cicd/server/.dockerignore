@@ -1,0 +1,50 @@
+# Build outputs
+**/bin/
+**/obj/
+**/out/
+**/publish/
+**/Coverage/
+
+# User-specific files
+**/*.user
+**/*.csproj.user
+**/*.suo
+**/*.vscode/
+**/.vs/
+
+# Logs & temp files
+**/*.log
+**/*.tlog
+**/*.tmp
+**/*.pid
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Node (for the frontend)
+**/node_modules/
+**/dist/
+npm-debug.log
+
+# Docker
+docker-compose.*
+Dockerfile*
+!Dockerfile
+
+# Tooling & artifacts
+*.nupkg
+*.snk
+**/*.coverage
+**/*.coveragexml
+
+# Environment files
+*.env
+.env.*
+
+*/global.json

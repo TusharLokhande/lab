@@ -36,9 +36,10 @@ jobs:
 
       - name: Deploy on server
         run: |
-          ssh ssh.tushar.sbs << 'EOF'
+          ssh -T ssh.tushar.sbs << 'EOF'
             set -e
-            cd /srv/apps/wealthfy/lab/cicd
+            cd /srv/apps/wealthfy
             git pull
+            cd cicd
             docker compose up -d --build
           EOF
